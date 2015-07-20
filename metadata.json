@@ -1,0 +1,22 @@
+{
+  "name": "thanandorn-dropwizard",
+  "version": "0.0.1",
+  "author": "Tron Thongsringklee",
+  "summary": "Dropwizard Puppet Module",
+  "license": "MIT",
+  "source": "http://github.com/thanandorn/puppet-dropwizard",
+  "project_page": "https://github.com/thanandorn/puppet-dropwizard",
+  "issues_url": "https://github.com/thanandorn/puppet-dropwizard/issues",
+  "dependencies": [
+    {
+      "name":"puppetlabs-stdlib",
+      "version_requirement":">= 1.0.0"
+    }, {
+      "name":"puppetlabs-java",
+      "version_requirement":">= 1.4.0"
+    }, {
+      "name":"jfryman-nginx",
+      "version_requirement":">= 0.2.7"
+    }
+  ]
+}
