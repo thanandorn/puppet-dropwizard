@@ -48,7 +48,7 @@ define dropwizard::instance (
     mode    => '0640',
     content => inline_template('<%= @conf_hash.to_yaml %>'),
     require => File['/etc/dropwizard'],
-    notify  => Service[$name],
+    notify  => Service["dropwizard_${name}"],
   }
 
   file { "/usr/lib/systemd/system/dropwizard_${name}.service":
