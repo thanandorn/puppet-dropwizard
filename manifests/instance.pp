@@ -5,8 +5,10 @@ define dropwizard::instance (
   $package       = undef,
   $user          = $::dropwizard::run_user,
   $group         = $::dropwizard::run_group,
+  $http_host     = 'localhost',
   $http_port     = '8080',
   $root_path     = '/opt',
+  $target_path   = '',
   $conf_path     = $::dropwizard::config_path,
   $conf_hash     = {
     'server' => {
@@ -23,11 +25,13 @@ define dropwizard::instance (
 ) {
 
   nginx::resource::upstream { "dropwizard_${name}":
-    members => [ "http://localhost:${http_port}" ],
+    ensure  => $ensure,
+    members => [ "${http_host}:${http_port}" ],
   }
 
-  nginx::resource::vhost { $name:
-    proxy => "http://dropwizard_${name}",
+  nginx::resource::vhost { "dropwizard_${name}":
+    ensure => $ensure,
+    proxy  => "http://dropwizard_${name}",
   }
 
   if $package != undef {
@@ -47,12 +51,12 @@ define dropwizard::instance (
     notify  => Service[$name],
   }
 
-  file { "/usr/lib/systemd/system/${name}.service":
+  file { "/usr/lib/systemd/system/dropwizard_${name}.service":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => template('dropwizard/service/systemd/dropwizard.service.erb'),
+    content => template('dropwizard/service/dropwizard.systemd.erb'),
   }
 
   $service_ensure = $ensure ? {
@@ -65,9 +69,9 @@ define dropwizard::instance (
     /absent/  => false,
   }
 
-  service { $name:
+  service { "dropwizard_${name}":
     ensure  => $service_ensure,
     enable  => $service_enable,
-    require => File["/usr/lib/systemd/system/${name}.service"],
+    require => File["/usr/lib/systemd/system/dropwizard_${name}.service"],
   }
 }
