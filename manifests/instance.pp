@@ -8,7 +8,6 @@ define dropwizard::instance (
   $http_port     = '8080',
   $root_path     = '/opt',
   $conf_path     = $::dropwizard::config_path,
-  $conf_template = "inline_template('<% @conf_hash.to_yaml %>')",
   $conf_hash     = {
     'server' => {
       'type'             => 'simple',
@@ -38,22 +37,22 @@ define dropwizard::instance (
     }
   }
 
-  file { "${config_path}/${name}.yaml":
+  file { "${conf_path}/${name}.yaml":
     ensure  => $ensure,
     owner   => $user,
     group   => $group,
     mode    => '0640',
-    content => $conf_template,
+    content => inline_template('<%= @conf_hash.to_yaml %>'),
     require => File['/etc/dropwizard'],
     notify  => Service[$name],
   }
 
   file { "/usr/lib/systemd/system/${name}.service":
     ensure  => $ensure,
-    owner   => $user,
-    group   => $group,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0644',
-    content => template('service/systemd/dropwizard.service.erb'),
+    content => template('dropwizard/service/systemd/dropwizard.service.erb'),
   }
 
   $service_ensure = $ensure ? {

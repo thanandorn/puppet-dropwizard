@@ -77,13 +77,15 @@ class dropwizard (
     java_alternative      => $java_alternative,
     java_alternative_path => $java_alternative_path,
   }
+  contain ::java
 
-  create_resource('dropwizard::instance', $instances,
+  create_resources('dropwizard::instance', $instances,
     { require => Class['::java'] } )
 
   class { '::nginx':
     pid            => '/run/nginx.pid',
     service_ensure => running,
   }
+  contain ::nginx
 
 }

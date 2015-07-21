@@ -8,7 +8,7 @@ class dropwizard::params {
   $java_version          = 'present'
   $java_alternative      = undef
   $java_alternative_path = undef
-  $run_user              = 'root'
-  $run_group             = 'root'
+  $run_user              = 'dropwizard'
+  $run_group             = 'dropwizard'
 
 }
