@@ -54,7 +54,7 @@ define dropwizard::instance (
     owner   => $user,
     group   => $group,
     mode    => '0640',
-    content => inline_template('<%= @conf_hash.to_yaml %>'),
+    content => inline_template('<%= @config_hash.to_yaml %>'),
     require => File[$config_path],
     notify  => Service["dropwizard_${name}"],
   }
