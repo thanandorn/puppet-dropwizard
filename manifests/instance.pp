@@ -1,16 +1,17 @@
 # Define: dropwizard::instance
 define dropwizard::instance (
-  $ensure        = 'present',
-  $version       = '0.0.1-SNAPSHOT',
-  $package       = undef,
-  $user          = $::dropwizard::run_user,
-  $group         = $::dropwizard::run_group,
-  $http_host     = 'localhost',
-  $http_port     = '8080',
-  $root_path     = '/opt',
-  $target_path   = '',
-  $conf_path     = $::dropwizard::config_path,
-  $conf_hash     = {
+  $ensure       = 'present',
+  $version      = '0.0.1-SNAPSHOT',
+  $package      = undef,
+  $user         = $::dropwizard::run_user,
+  $group        = $::dropwizard::run_group,
+  $http_host    = 'localhost',
+  $http_port    = '8080',
+  $base_path    = '/opt',
+  $jar_file     = undef,
+  $config_files = [],
+  $config_path  = $::dropwizard::config_path,
+  $config_hash  = {
     'server' => {
       'type'             => 'simple',
       'appContextPath'   => '/application',
@@ -37,18 +38,32 @@ define dropwizard::instance (
   if $package != undef {
     package { $package:
       ensure => $ensure,
-      before => Service[$name],
+      before => Service["dropwizard_${name}"],
     }
   }
 
-  file { "${conf_path}/${name}.yaml":
+  # Single config file
+  if count($config_files) == 0 {
+    $_config_files = [ "${config_path}/${name}.yaml" ]
+  } else {
+    $_config_files = $config_files
+  }
+
+  file { "${config_path}/${name}.yaml":
     ensure  => $ensure,
     owner   => $user,
     group   => $group,
     mode    => '0640',
     content => inline_template('<%= @conf_hash.to_yaml %>'),
-    require => File['/etc/dropwizard'],
+    require => File[$config_path],
     notify  => Service["dropwizard_${name}"],
+  }
+
+  # Assign default jar
+  if $jar_file == undef {
+    $_jar_file = "${base_path}/${name}/${name}-${version}.jar"
+  } else {
+    $_jar_file = $jar_file
   }
 
   file { "/usr/lib/systemd/system/dropwizard_${name}.service":

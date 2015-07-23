@@ -6,7 +6,7 @@ After=syslog.target network.target
 Type=simple
 User=<%= @user %>
 Group=<%= @group %>
-ExecStart=/bin/java -jar <%= @root_path %>/<%= @name %>/<%= @target_path %><%= @name %>-<%= @version %>.jar server <%= @conf_path %>/<%= @name %>.yaml
+ExecStart=/bin/java -jar <%= @_jar_file %> server "<%= @_config_files.join(',') %>"
 Restart=on-failure
 RestartSec=30s
 
