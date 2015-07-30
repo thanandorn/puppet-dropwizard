@@ -53,3 +53,48 @@ To install specific Java package and version
     java_version => '1.8.0_51',
   }
 ```
+To create Dropwizard config files and services
+
+```puppet
+  class { '::dropwizard':
+    java_package => 'jdk',
+    java_version => '1.8.0_51',
+    instances    => {
+      "demoapp"  => {
+        http_port   => "8080",
+        config_hash => {
+          "server"  => {
+            'type'             => 'simple',
+            'appContextPath'   => '/app',
+            'adminContextPath' => '/admin',
+            'connector'        => {
+              'type' => 'http',
+              'port' => '8080'
+            }
+          }
+        }
+      }
+    }
+```
+
+To create Dropwizard config files and services from `hiera`
+
+```
+---
+classes:
+  - dropwizard
+
+dropwizard::java_package: 'jdk'
+dropwizard::java_version: '1.8.0_51'
+dropwizard::instances:
+  demoapp:
+    http_port: 8080
+    server:
+      type: 'simple'
+      appContextPath: '/app'
+      adminContextPath: '/admin'
+      connector:
+        type: 'http'
+        port: 8080
+```
+
