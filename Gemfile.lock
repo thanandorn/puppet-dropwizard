@@ -53,6 +53,9 @@ PLATFORMS
 DEPENDENCIES
   facter (>= 1.7.0)
   metadata-json-lint
-  puppet (>= 3.3)
+  puppet (>= 3.8)
   puppet-lint (>= 1.0.0)
   puppetlabs_spec_helper (>= 0.8.2)
+  rake (>= 10.4.2)
+  rspec (>= 3.3.0)
+  rspec-puppet (>= 2.2.0)
