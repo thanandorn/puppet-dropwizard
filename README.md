@@ -1,5 +1,7 @@
 # puppet-dropwizard
 
+[![Build Status](https://travis-ci.org/thanandorn/puppet-dropwizard.svg?branch=master)](https://travis-ci.org/thanandorn/puppet-dropwizard)
+
 #### Table of Contents
 
 1. [Overview](#overview)
@@ -89,12 +91,13 @@ dropwizard::java_version: '1.8.0_51'
 dropwizard::instances:
   demoapp:
     http_port: 8080
-    server:
-      type: 'simple'
-      appContextPath: '/app'
-      adminContextPath: '/admin'
-      connector:
-        type: 'http'
-        port: 8080
+    config_hash:
+      server:
+        type: 'simple'
+        appContextPath: '/app'
+        adminContextPath: '/admin'
+        connector:
+          type: 'http'
+          port: 8080
 ```
 
