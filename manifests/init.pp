@@ -1,30 +1,19 @@
 # == Class: dropwizard
 #
-# Full description of class dropwizard here.
+# Puppet module for installing, configuring and managing Dropwizard application.
 #
 # === Parameters
 #
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
 # === Variables
 #
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the function of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
 #
 # === Examples
 #
-#  class { 'dropwizard':
-#    config_path = '/etc/dropwizard',
+#
+#
+#  class { '::dropwizard':
+#    java_package => 'jdk',
+#    java_version => '1.8.0_51',
 #  }
 #
 # === Authors
@@ -37,6 +26,7 @@
 #
 class dropwizard (
   $config_path           = $::dropwizard::params::config_path,
+  $base_path             = $::dropwizard::params::base_path,
   $java_distribution     = $::dropwizard::params::java_distribution,
   $java_package          = $::dropwizard::params::java_package,
   $java_version          = $::dropwizard::params::java_version,
@@ -44,6 +34,9 @@ class dropwizard (
   $java_alternative_path = $::dropwizard::params::java_alternative_path,
   $run_user              = $::dropwizard::params::run_user,
   $run_group             = $::dropwizard::params::run_group,
+  $proxy                 = $::dropwizard::params::proxy,
+  $virtual_hosts         = $::dropwizard::params::virtual_hosts,
+  $location_defaults     = $::dropwizard::params::location_defaults,
   $instances             = {},
 ) inherits dropwizard::params {
 
@@ -82,10 +75,12 @@ class dropwizard (
   create_resources('dropwizard::instance', $instances,
     { require => Class['::java'] } )
 
-  class { '::nginx':
-    pid            => '/run/nginx.pid',
-    service_ensure => running,
-  }
-  contain ::nginx
+  validate_bool($proxy)
+  validate_hash($virtual_hosts)
 
+  if $proxy {
+    include ::nginx
+    contain ::nginx
+    create_resources('nginx::resource::vhost', $virtual_hosts)
+  }
 }

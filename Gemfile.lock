@@ -5,7 +5,7 @@ GEM
     diff-lcs (1.2.5)
     facter (2.4.4)
       CFPropertyList (~> 2.2.6)
-    hiera (2.0.0)
+    hiera (3.0.1)
       json_pure
     json (1.8.3)
     json_pure (1.8.2)
@@ -15,9 +15,9 @@ GEM
       spdx-licenses (~> 1.0)
     mocha (1.1.0)
       metaclass (~> 0.0.1)
-    puppet (4.2.0)
+    puppet (4.2.1)
       facter (> 2.0, < 4)
-      hiera (>= 2.0, < 3)
+      hiera (>= 2.0, < 4)
       json_pure
     puppet-lint (1.1.0)
     puppet-syntax (2.0.0)
@@ -56,6 +56,9 @@ DEPENDENCIES
   puppet (>= 3.8)
   puppet-lint (>= 1.0.0)
   puppetlabs_spec_helper (>= 0.8.2)
-  rake (>= 10.4.2)
-  rspec (>= 3.3.0)
-  rspec-puppet (>= 2.2.0)
+  rake
+  rspec
+  rspec-puppet
+
+BUNDLED WITH
+   1.10.6

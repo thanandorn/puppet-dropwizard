@@ -8,7 +8,7 @@ gem 'facter', '>= 1.7.0'
 gem 'metadata-json-lint'
 
 group :test do
-  gem 'rake', '>= 10.4.2'
-  gem 'rspec', '>= 3.3.0'
-  gem 'rspec-puppet', '>= 2.2.0'
+  gem 'rake'
+  gem 'rspec'
+  gem 'rspec-puppet'
 end

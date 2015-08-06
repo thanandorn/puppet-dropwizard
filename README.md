@@ -62,14 +62,18 @@ To create Dropwizard config files and services
     java_package => 'jdk',
     java_version => '1.8.0_51',
     instances    => {
-      "demoapp"  => {
-        http_port   => "8080",
+      'demoapp'  => {
+        nginx_locations => {
+          'app'         => {
+            'proxy'     => 'http://localhost:8080',
+            'location'  => '^~ /app',
+          }
+        },
         config_hash => {
           "server"  => {
-            'type'             => 'simple',
-            'appContextPath'   => '/app',
-            'adminContextPath' => '/admin',
-            'connector'        => {
+            'type'           => 'simple',
+            'appContextPath' => '/app',
+            'connector'      => {
               'type' => 'http',
               'port' => '8080'
             }
@@ -90,12 +94,14 @@ dropwizard::java_package: 'jdk'
 dropwizard::java_version: '1.8.0_51'
 dropwizard::instances:
   demoapp:
-    http_port: 8080
+    nginx_locations:
+      app:
+        proxy: 'http://localhost:8080'
+        location: '^~ /app'
     config_hash:
       server:
         type: 'simple'
         appContextPath: '/app'
-        adminContextPath: '/admin'
         connector:
           type: 'http'
           port: 8080

@@ -1,17 +1,16 @@
 # Define: dropwizard::instance
 define dropwizard::instance (
-  $ensure       = 'present',
-  $version      = '0.0.1-SNAPSHOT',
-  $package      = undef,
-  $user         = $::dropwizard::run_user,
-  $group        = $::dropwizard::run_group,
-  $http_host    = 'localhost',
-  $http_port    = '8080',
-  $base_path    = '/opt',
-  $jar_file     = undef,
-  $config_files = [],
-  $config_path  = $::dropwizard::config_path,
-  $config_hash  = {
+  $ensure          = 'present',
+  $version         = '0.0.1-SNAPSHOT',
+  $package         = undef,
+  $user            = $::dropwizard::run_user,
+  $group           = $::dropwizard::run_group,
+  $nginx_locations = {},
+  $jar_file        = undef,
+  $base_path       = $::dropwizard::base_path,
+  $config_path     = $::dropwizard::config_path,
+  $config_files    = [],
+  $config_hash     = {
     'server' => {
       'type'             => 'simple',
       'appContextPath'   => '/application',
@@ -25,14 +24,10 @@ define dropwizard::instance (
 
 ) {
 
-  nginx::resource::upstream { "dropwizard_${name}":
-    ensure  => $ensure,
-    members => [ "${http_host}:${http_port}" ],
-  }
-
-  nginx::resource::vhost { "dropwizard_${name}":
-    ensure => $ensure,
-    proxy  => "http://dropwizard_${name}",
+  # Nginx Proxy
+  validate_hash($nginx_locations)
+  if $::dropwizard::proxy {
+    create_resources('nginx::resource::location', $nginx_locations, $::dropwizard::location_defaults)
   }
 
   if $package != undef {
