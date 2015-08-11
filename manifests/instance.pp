@@ -5,7 +5,6 @@ define dropwizard::instance (
   $package         = undef,
   $user            = $::dropwizard::run_user,
   $group           = $::dropwizard::run_group,
-  $nginx_locations = {},
   $jar_file        = undef,
   $base_path       = $::dropwizard::base_path,
   $config_path     = $::dropwizard::config_path,
@@ -24,12 +23,7 @@ define dropwizard::instance (
 
 ) {
 
-  # Nginx Proxy
-  validate_hash($nginx_locations)
-  if $::dropwizard::proxy {
-    create_resources('nginx::resource::location', $nginx_locations, $::dropwizard::location_defaults)
-  }
-
+  # Package Installation
   if $package != undef {
     package { $package:
       ensure => $ensure,

@@ -29,7 +29,7 @@ Supported Config Type
 
 To install the module run:
 
-```
+```bash
  $ puppet module install thanandorn-dropwizard
 ```
 
@@ -47,28 +47,12 @@ By default, the module will install Java from default values of [puppetlabs-java
   include ::dropwizard
 ```
 
-To install specific Java package and version
-
-```puppet
-  class { '::dropwizard':
-    java_package => 'jdk',
-    java_version => '1.8.0_51',
-  }
-```
 To create Dropwizard config files and services
 
 ```puppet
   class { '::dropwizard':
-    java_package => 'jdk',
-    java_version => '1.8.0_51',
     instances    => {
       'demoapp'  => {
-        nginx_locations => {
-          'app'         => {
-            'proxy'     => 'http://localhost:8080',
-            'location'  => '^~ /app',
-          }
-        },
         config_hash => {
           "server"  => {
             'type'           => 'simple',
@@ -85,19 +69,16 @@ To create Dropwizard config files and services
 
 To create Dropwizard config files and services from `hiera`
 
-```
+```yaml
 ---
 classes:
   - dropwizard
 
-dropwizard::java_package: 'jdk'
-dropwizard::java_version: '1.8.0_51'
+java::package: 'jdk'
+java::version: '1.8.0_51'
+
 dropwizard::instances:
   demoapp:
-    nginx_locations:
-      app:
-        proxy: 'http://localhost:8080'
-        location: '^~ /app'
     config_hash:
       server:
         type: 'simple'

@@ -2,7 +2,5 @@ fixtures:
   forge_modules:
     java: "puppetlabs-java"
     stdlib: "puppetlabs-stdlib"
-    nginx: "jfryman-nginx"
-    concat: "puppetlabs-concat"
   symlinks:
     dropwizard: "#{source_dir}"

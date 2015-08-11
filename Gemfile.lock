@@ -59,6 +59,3 @@ DEPENDENCIES
   rake
   rspec
   rspec-puppet
-
-BUNDLED WITH
-   1.10.6
