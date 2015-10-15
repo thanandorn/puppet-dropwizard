@@ -6,7 +6,8 @@ After=syslog.target network.target
 Type=simple
 User=<%= @user %>
 Group=<%= @group %>
-ExecStart=/bin/java -jar <%= @_jar_file %> server "<%= @_config_files.join(',') %>"
+EnvironmentFile=-/etc/sysconfig/dropwizard_<%= @name %>
+ExecStart=/bin/java ${JAVA_OPTS} -jar <%= @_jar_file %> server "<%= @_config_files.join(',') %>"
 Restart=on-failure
 RestartSec=30s
 
