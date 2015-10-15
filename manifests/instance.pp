@@ -46,6 +46,7 @@ define dropwizard::instance (
     group   => 'root',
     mode    => '0644',
     content => template('dropwizard/sysconfig/dropwizard.sysconfig.erb'),
+    notify  => Service["dropwizard_${name}"],
   }
 
   file { "${config_path}/${name}.yaml":
@@ -54,7 +55,7 @@ define dropwizard::instance (
     group   => $group,
     mode    => '0640',
     content => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
-    require => File["$config_path","${sysconfig_path}/dropwizard_${name}"],
+    require => File[$config_path,"${sysconfig_path}/dropwizard_${name}"],
     notify  => Service["dropwizard_${name}"],
   }
 
