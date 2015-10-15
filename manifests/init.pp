@@ -26,6 +26,7 @@
 #
 class dropwizard (
   $config_path           = $::dropwizard::params::config_path,
+  $sysconfig_path        = $::dropwizard::params::sysconfig_path,
   $base_path             = $::dropwizard::params::base_path,
   $run_user              = $::dropwizard::params::run_user,
   $run_group             = $::dropwizard::params::run_group,

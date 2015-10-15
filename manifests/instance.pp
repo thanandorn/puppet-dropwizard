@@ -8,6 +8,7 @@ define dropwizard::instance (
   $user            = $::dropwizard::run_user,
   $group           = $::dropwizard::run_group,
   $base_path       = $::dropwizard::base_path,
+  $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
   $config_files    = [],
   $config_hash     = {
@@ -39,13 +40,21 @@ define dropwizard::instance (
     $_config_files = $config_files
   }
 
+  file { "${sysconfig_path}/dropwizard_${name}":
+    ensure  => $ensure,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => template('dropwizard/sysconfig/dropwizard.sysconfig.erb'),
+  }
+
   file { "${config_path}/${name}.yaml":
     ensure  => $ensure,
     owner   => $user,
     group   => $group,
     mode    => '0640',
     content => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
-    require => File[$config_path],
+    require => File["$config_path","${sysconfig_path}/dropwizard_${name}"],
     notify  => Service["dropwizard_${name}"],
   }
 
