@@ -4,13 +4,15 @@ define dropwizard::instance (
   $version         = '0.0.1-SNAPSHOT',
   $package         = undef,
   $jar_file        = undef,
-  $sysconfig       = {},
   $user            = $::dropwizard::run_user,
   $group           = $::dropwizard::run_group,
   $base_path       = $::dropwizard::base_path,
   $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
   $config_files    = [],
+  $sysconfig_hash  = {
+    'JAVA_CMD' => '/bin/java'
+  },
   $config_hash     = {
     'server' => {
       'type'             => 'simple',
@@ -66,12 +68,20 @@ define dropwizard::instance (
     $_jar_file = $jar_file
   }
 
+  # This is required to make reload systemd and pick up the newest service definitions
+  exec {
+    'systemctl-daemon-reload':
+      command     => '/bin/systemctl daemon-reload',
+      refreshonly => true,
+  }
+
   file { "/usr/lib/systemd/system/dropwizard_${name}.service":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
     content => template('dropwizard/service/dropwizard.systemd.erb'),
+    require => Exec['systemctl-daemon-reload']
   }
 
   $service_ensure = $ensure ? {

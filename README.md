@@ -53,6 +53,9 @@ To create Dropwizard config files and services
   class { '::dropwizard':
     instances    => {
       'demoapp'  => {
+        sysconfig_hash => {
+          'JAVA_CMD' => '/usr/java/latest/jre/bin/java'
+        },
         config_hash => {
           "server"  => {
             'type'           => 'simple',
@@ -65,6 +68,7 @@ To create Dropwizard config files and services
         }
       }
     }
+  }
 ```
 
 To create Dropwizard config files and services from `hiera`
@@ -79,6 +83,8 @@ java::version: '1.8.0_51'
 
 dropwizard::instances:
   demoapp:
+    sysconfig_hash:
+      JAVA_CMD: '/usr/java/latest/jre/bin/java'
     config_hash:
       server:
         type: 'simple'

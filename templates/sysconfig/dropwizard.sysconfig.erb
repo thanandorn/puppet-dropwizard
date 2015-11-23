@@ -1,6 +1,6 @@
 ### MANAGED BY PUPPET ###
 
-<% @sysconfig.sort_by {|k,v| k}.each do |key, value| -%>
+<% @sysconfig_hash.sort_by {|k,v| k}.each do |key, value| -%>
 <%= key %>='<%= value %>'
 <% end -%>
 
