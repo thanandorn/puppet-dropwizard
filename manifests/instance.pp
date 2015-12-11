@@ -81,7 +81,7 @@ define dropwizard::instance (
     group   => 'root',
     mode    => '0644',
     content => template('dropwizard/service/dropwizard.systemd.erb'),
-    require => Exec['systemctl-daemon-reload']
+    notify  => Exec['systemctl-daemon-reload']
   }
 
   $service_ensure = $ensure ? {
@@ -95,8 +95,8 @@ define dropwizard::instance (
   }
 
   service { "dropwizard_${name}":
-    ensure  => $service_ensure,
-    enable  => $service_enable,
-    require => File["/usr/lib/systemd/system/dropwizard_${name}.service"],
+    ensure    => $service_ensure,
+    enable    => $service_enable,
+    subscribe => Exec['systemctl-daemon-reload']
   }
 }
