@@ -2,7 +2,7 @@
 define dropwizard::instance (
   $ensure          = 'present',
   $version         = '0.0.1-SNAPSHOT',
-  $packages        = undef,
+  $package         = undef,
   $jar_file        = undef,
   $sysconfig       = {},
   $user            = $::dropwizard::run_user,
