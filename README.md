@@ -1,6 +1,7 @@
 # puppet-dropwizard
 
 [![Build Status](https://travis-ci.org/thanandorn/puppet-dropwizard.svg?branch=master)](https://travis-ci.org/thanandorn/puppet-dropwizard)
+[![Puppet Forge](http://img.shields.io/puppetforge/v/thanandorn/dropwizard.svg)](https://forge.puppetlabs.com/thanandorn/dropwizard)
 
 #### Table of Contents
 
