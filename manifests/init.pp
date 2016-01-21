@@ -9,8 +9,6 @@
 #
 # === Examples
 #
-#
-#
 #  class { '::dropwizard':
 #    java_package => 'jdk',
 #    java_version => '1.8.0_51',
@@ -25,12 +23,13 @@
 # Copyright 2015 Tron Thongsringklee.
 #
 class dropwizard (
-  $config_path           = $::dropwizard::params::config_path,
-  $sysconfig_path        = $::dropwizard::params::sysconfig_path,
-  $base_path             = $::dropwizard::params::base_path,
-  $run_user              = $::dropwizard::params::run_user,
-  $run_group             = $::dropwizard::params::run_group,
-  $instances             = {},
+  $config_path    = $::dropwizard::params::config_path,
+  $sysconfig_path = $::dropwizard::params::sysconfig_path,
+  $base_path      = $::dropwizard::params::base_path,
+  $run_user       = $::dropwizard::params::run_user,
+  $run_group      = $::dropwizard::params::run_group,
+  $config_mode    = $::dropwizard::params::config_mode,
+  $instances      = {},
 ) inherits dropwizard::params {
 
   include ::java
