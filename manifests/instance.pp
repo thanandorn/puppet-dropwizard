@@ -70,7 +70,7 @@ define dropwizard::instance (
 
   # This is required to make reload systemd and pick up the newest service definitions
   exec {
-    'systemctl-daemon-reload':
+    "systemctl-daemon-reload-dropwizard_${name}":
       command     => '/bin/systemctl daemon-reload',
       refreshonly => true,
   }
@@ -81,7 +81,7 @@ define dropwizard::instance (
     group   => 'root',
     mode    => '0644',
     content => template('dropwizard/service/dropwizard.systemd.erb'),
-    notify  => Exec['systemctl-daemon-reload']
+    notify  => Exec["systemctl-daemon-reload-dropwizard_${name}"]
   }
 
   $service_ensure = $ensure ? {
@@ -97,6 +97,6 @@ define dropwizard::instance (
   service { "dropwizard_${name}":
     ensure    => $service_ensure,
     enable    => $service_enable,
-    subscribe => Exec['systemctl-daemon-reload']
+    subscribe => Exec["systemctl-daemon-reload-dropwizard_${name}"]
   }
 }
