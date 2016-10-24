@@ -52,8 +52,8 @@ class dropwizard (
   if ! defined(File[$config_path]) {
     file { $config_path:
       ensure => directory,
-      owner  => 'root',
-      group  => 'root',
+      owner  => $run_user,
+      group  => $run_group,
       mode   => '0755',
     }
   }

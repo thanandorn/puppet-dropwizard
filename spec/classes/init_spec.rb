@@ -29,6 +29,12 @@ describe 'dropwizard' do
               it { should contain_group('dropwizard').with_system(true) }
 
               it { should contain_class('java') }
+              it { should contain_file('/etc/dropwizard').with({
+                'owner' => 'dropwizard',
+                'group' => 'dropwizard',
+                'mode'  => '0755',
+              })}
+
             end
 
           end
