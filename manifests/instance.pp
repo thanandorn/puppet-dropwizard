@@ -12,17 +12,7 @@ define dropwizard::instance (
   $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
   $config_files    = [],
-  $config_hash     = {
-    'server' => {
-      'type'             => 'simple',
-      'appContextPath'   => '/application',
-      'adminContextPath' => '/admin',
-      'connector'        => {
-        'type' => 'http',
-        'port' => '8080'
-      }
-    }
-  },
+  $config_hash     = {},
 
 ) {
 
@@ -34,13 +24,6 @@ define dropwizard::instance (
     }
   }
 
-  # Single config file
-  if count($config_files) == 0 {
-    $_config_files = [ "${config_path}/${name}.yaml" ]
-  } else {
-    $_config_files = $config_files
-  }
-
   file { "${sysconfig_path}/dropwizard_${name}":
     ensure  => $ensure,
     owner   => 'root',
@@ -50,12 +33,16 @@ define dropwizard::instance (
     notify  => Service["dropwizard_${name}"],
   }
 
+  # Merged Config Hash
+  $merged_config_file_hash = parseyaml(inline_template('<%= extra_config_hash = Hash.new ; @config_files.each { |file| extra_config_hash = extra_config_hash.merge(YAML.load_file(file)) } ; p extra_config_hash.to_yaml %>'))
+  $merged_config_hash = deep_merge($merged_config_file_hash, $config_hash)
+
   file { "${config_path}/${name}.yaml":
     ensure  => $ensure,
     owner   => $user,
     group   => $group,
     mode    => $mode,
-    content => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
+    content => inline_template('<%= @merged_config_hash.to_yaml.gsub("---\n", "") %>'),
     require => File[$config_path,"${sysconfig_path}/dropwizard_${name}"],
     notify  => Service["dropwizard_${name}"],
   }
@@ -67,7 +54,7 @@ define dropwizard::instance (
     $_jar_file = $jar_file
   }
 
-  file { "/usr/lib/systemd/system/dropwizard_${name}.service":
+  file { "/lib/systemd/system/dropwizard_${name}.service":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
