@@ -11,7 +11,7 @@ define dropwizard::instance (
   $base_path       = $::dropwizard::base_path,
   $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
-  $config_files    = [],
+  $config_files    = [], # additional config files
   $config_hash     = {},
 
 ) {
@@ -34,7 +34,7 @@ define dropwizard::instance (
   }
 
   # Merged Config Hash
-  $merged_config_file_hash = parseyaml(inline_template('<%= extra_config_hash = Hash.new ; @config_files.each { |file| extra_config_hash = extra_config_hash.merge(YAML.load_file(file)) } ; p extra_config_hash.to_yaml %>'))
+  $merged_config_file_hash = load_and_deep_merge_yaml($config_files)
   $merged_config_hash = deep_merge($merged_config_file_hash, $config_hash)
 
   file { "${config_path}/${name}.yaml":
