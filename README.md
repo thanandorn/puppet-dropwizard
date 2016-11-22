@@ -42,7 +42,9 @@ mod 'thanandorn-dropwizard'
 
 ## Usage
 
-By default, the module will install Java from default values of [puppetlabs-java](https://github.com/puppetlabs/puppetlabs-java) and Nginx from [jfryman-nginx](https://github.com/jfryman/puppet-nginx)
+By default, the module will install Java from default values of
+ [puppetlabs-java](https://github.com/puppetlabs/puppetlabs-java)
+
 
 ```puppet
   include ::dropwizard

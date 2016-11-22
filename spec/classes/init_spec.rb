@@ -18,10 +18,12 @@ describe 'dropwizard' do
 
             context 'default' do
               it { should contain_class('dropwizard').with(
-                'config_path' => '/etc/dropwizard',
-                'run_user'    => 'dropwizard',
-                'run_group'   => 'dropwizard',
-                'instances'   => {},
+                'base_path'      => '/opt',
+                'config_path'    => '/etc/dropwizard',
+                'run_user'       => 'dropwizard',
+                'run_group'      => 'dropwizard',
+                'sysconfig_path' => '/etc/sysconfig',
+                'instances'      => {},
               )}
 
               it { should_not contain_dropwizard__instance('demoapp') }

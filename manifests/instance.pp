@@ -20,7 +20,10 @@ define dropwizard::instance (
   if $package != undef {
     package { $package:
       ensure => $ensure,
-      before => Service["dropwizard_${name}"],
+      before => [
+        Service["dropwizard_${name}"],
+        File["${config_path}/${name}.yaml"]
+      ],
     }
   }
 
@@ -34,7 +37,8 @@ define dropwizard::instance (
   }
 
   # Merged Config Hash
-  $merged_config_file_hash = load_and_deep_merge_yaml($config_files)
+  $sanitized_config_files = delete($config_files, "${config_path}/${name}.yaml")
+  $merged_config_file_hash = load_and_deep_merge_yaml($sanitized_config_files)
   $merged_config_hash = deep_merge($merged_config_file_hash, $config_hash)
 
   file { "${config_path}/${name}.yaml":

@@ -23,12 +23,12 @@
 # Copyright 2015 Tron Thongsringklee.
 #
 class dropwizard (
-  $config_path    = $::dropwizard::params::config_path,
-  $sysconfig_path = $::dropwizard::params::sysconfig_path,
   $base_path      = $::dropwizard::params::base_path,
+  $config_path    = $::dropwizard::params::config_path,
+  $config_mode    = $::dropwizard::params::config_mode,
+  $sysconfig_path = $::dropwizard::params::sysconfig_path,
   $run_user       = $::dropwizard::params::run_user,
   $run_group      = $::dropwizard::params::run_group,
-  $config_mode    = $::dropwizard::params::config_mode,
   $instances      = {},
 ) inherits dropwizard::params {
 
