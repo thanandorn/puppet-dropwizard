@@ -11,4 +11,5 @@ group :test do
   gem 'puppet-lint', '>= 1.0.0'
   gem 'facter', '>= 1.7.0'
   gem 'metadata-json-lint'
+  gem 'json_pure', "<= 1.8.3"
 end
