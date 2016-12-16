@@ -55,6 +55,7 @@ class dropwizard (
       owner  => $run_user,
       group  => $run_group,
       mode   => '0755',
+      before => Class['::java'],
     }
   }
 
