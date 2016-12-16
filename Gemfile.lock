@@ -52,6 +52,7 @@ PLATFORMS
 
 DEPENDENCIES
   facter (>= 1.7.0)
+  json_pure (<= 1.8.3)
   metadata-json-lint
   puppet (>= 3.8)
   puppet-lint (>= 1.0.0)
@@ -59,3 +60,6 @@ DEPENDENCIES
   rake
   rspec
   rspec-puppet
+
+BUNDLED WITH
+   1.13.6
