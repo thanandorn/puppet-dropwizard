@@ -11,18 +11,8 @@ define dropwizard::instance (
   $base_path       = $::dropwizard::base_path,
   $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
-  $config_files    = [],
-  $config_hash     = {
-    'server' => {
-      'type'             => 'simple',
-      'appContextPath'   => '/application',
-      'adminContextPath' => '/admin',
-      'connector'        => {
-        'type' => 'http',
-        'port' => '8080'
-      }
-    }
-  },
+  $config_files    = [], # additional config files
+  $config_hash     = {},
 
 ) {
 
@@ -30,15 +20,11 @@ define dropwizard::instance (
   if $package != undef {
     package { $package:
       ensure => $ensure,
-      before => Service["dropwizard_${name}"],
+      before => [
+        Service["dropwizard_${name}"],
+        File["${config_path}/${name}.yaml"]
+      ],
     }
-  }
-
-  # Single config file
-  if count($config_files) == 0 {
-    $_config_files = [ "${config_path}/${name}.yaml" ]
-  } else {
-    $_config_files = $config_files
   }
 
   file { "${sysconfig_path}/dropwizard_${name}":
@@ -50,12 +36,17 @@ define dropwizard::instance (
     notify  => Service["dropwizard_${name}"],
   }
 
+  # Merged Config Hash
+  $sanitized_config_files = delete($config_files, "${config_path}/${name}.yaml")
+  $merged_config_file_hash = load_and_deep_merge_yaml($sanitized_config_files)
+  $merged_config_hash = deep_merge($merged_config_file_hash, $config_hash)
+
   file { "${config_path}/${name}.yaml":
     ensure  => $ensure,
     owner   => $user,
     group   => $group,
     mode    => $mode,
-    content => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
+    content => inline_template('<%= @merged_config_hash.to_yaml.gsub("---\n", "") %>'),
     require => File[$config_path,"${sysconfig_path}/dropwizard_${name}"],
     notify  => Service["dropwizard_${name}"],
   }
@@ -67,7 +58,7 @@ define dropwizard::instance (
     $_jar_file = $jar_file
   }
 
-  file { "/usr/lib/systemd/system/dropwizard_${name}.service":
+  file { "/lib/systemd/system/dropwizard_${name}.service":
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
