@@ -28,7 +28,9 @@ class dropwizard (
   $config_mode    = $::dropwizard::params::config_mode,
   $sysconfig_path = $::dropwizard::params::sysconfig_path,
   $run_user       = $::dropwizard::params::run_user,
+  $run_uid        = $::dropwizard::params::run_uid,
   $run_group      = $::dropwizard::params::run_group,
+  $run_gid        = $::dropwizard::params::run_gid,
   $instances      = {},
 ) inherits dropwizard::params {
 
@@ -39,6 +41,7 @@ class dropwizard (
     user { $run_user:
       ensure => present,
       system => true,
+      uid    => $run_uid,
     }
   }
 
@@ -46,6 +49,7 @@ class dropwizard (
     group { $run_group:
       ensure => present,
       system => true,
+      gid    => $run_gid,
     }
   }
 
