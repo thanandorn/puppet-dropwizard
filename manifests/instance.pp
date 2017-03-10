@@ -1,6 +1,9 @@
 # Define: dropwizard::instance
 define dropwizard::instance (
-  $ensure          = 'present',
+  $package_ensure  = 'present',
+  $file_ensure     = 'present',
+  $service_ensure  = 'running',
+  $service_enable  = true,
   $version         = '0.0.1-SNAPSHOT',
   $package         = undef,
   $jar_file        = undef,
@@ -29,7 +32,7 @@ define dropwizard::instance (
   # Package Installation
   if $package != undef {
     package { $package:
-      ensure => $ensure,
+      ensure => $package_ensure,
       before => Service["dropwizard_${name}"],
     }
   }
@@ -42,7 +45,7 @@ define dropwizard::instance (
   }
 
   file { "${sysconfig_path}/dropwizard_${name}":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -51,7 +54,7 @@ define dropwizard::instance (
   }
 
   file { "${config_path}/${name}.yaml":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => $user,
     group   => $group,
     mode    => $mode,
@@ -68,7 +71,7 @@ define dropwizard::instance (
   }
 
   file { "/usr/lib/systemd/system/dropwizard_${name}.service":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -80,16 +83,6 @@ define dropwizard::instance (
     command     => 'systemctl daemon-reload',
     path        => ['/usr/bin','/bin','/sbin'],
     refreshonly => true,
-  }
-
-  $service_ensure = $ensure ? {
-    /present/ => 'running',
-    /absent/  => 'stopped',
-  }
-
-  $service_enable = $ensure ? {
-    /present/ => true,
-    /absent/  => false,
   }
 
   service { "dropwizard_${name}":
