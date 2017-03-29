@@ -30,7 +30,7 @@ define dropwizard::instance (
   if $package != undef {
     package { $package:
       ensure => $ensure,
-      before => Service["dropwizard_${name}"],
+      notify => Service["dropwizard_${name}"],
     }
   }
 
@@ -41,8 +41,13 @@ define dropwizard::instance (
     $_config_files = $config_files
   }
 
+  $file_ensure = $ensure ? {
+    /absent/ => 'absent',
+    default  => 'present',
+  }
+
   file { "${sysconfig_path}/dropwizard_${name}":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -51,7 +56,7 @@ define dropwizard::instance (
   }
 
   file { "${config_path}/${name}.yaml":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => $user,
     group   => $group,
     mode    => $mode,
@@ -68,7 +73,7 @@ define dropwizard::instance (
   }
 
   file { "/usr/lib/systemd/system/dropwizard_${name}.service":
-    ensure  => $ensure,
+    ensure  => $file_ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
@@ -83,13 +88,13 @@ define dropwizard::instance (
   }
 
   $service_ensure = $ensure ? {
-    /present/ => 'running',
-    /absent/  => 'stopped',
+    /absent/ => 'stopped',
+    default  => 'running',
   }
 
   $service_enable = $ensure ? {
-    /present/ => true,
-    /absent/  => false,
+    /absent/ => false,
+    default  => true,
   }
 
   service { "dropwizard_${name}":
