@@ -11,6 +11,7 @@ define dropwizard::instance (
   $base_path       = $::dropwizard::base_path,
   $sysconfig_path  = $::dropwizard::sysconfig_path,
   $config_path     = $::dropwizard::config_path,
+  $config_test     = false,
   $config_files    = [],
   $config_hash     = {
     'server' => {
@@ -46,6 +47,11 @@ define dropwizard::instance (
     default  => 'present',
   }
 
+  #Set validate_cmd
+  if $config_test {
+    $validate_cmd = "su - ${user} -c \"/bin/java -jar ${jar_file} check %\""
+  }
+
   file { "${sysconfig_path}/dropwizard_${name}":
     ensure  => $file_ensure,
     owner   => 'root',
@@ -56,13 +62,14 @@ define dropwizard::instance (
   }
 
   file { "${config_path}/${name}.yaml":
-    ensure  => $file_ensure,
-    owner   => $user,
-    group   => $group,
-    mode    => $mode,
-    content => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
-    require => File[$config_path,"${sysconfig_path}/dropwizard_${name}"],
-    notify  => Service["dropwizard_${name}"],
+    ensure       => $file_ensure,
+    owner        => $user,
+    group        => $group,
+    mode         => $mode,
+    content      => inline_template('<%= @config_hash.to_yaml.gsub("---\n", "") %>'),
+    require      => File[$config_path,"${sysconfig_path}/dropwizard_${name}"],
+    validate_cmd => $validate_cmd,
+    notify       => Service["dropwizard_${name}"],
   }
 
   # Assign default jar
