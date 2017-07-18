@@ -1,6 +1,8 @@
 fixtures:
   forge_modules:
-    java: "puppetlabs-java"
+    java:
+      repo: "puppetlabs/java"
+      ref: "1.6.0"
     stdlib: "puppetlabs-stdlib"
   symlinks:
     dropwizard: "#{source_dir}"
