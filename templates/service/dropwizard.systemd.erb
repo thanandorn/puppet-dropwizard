@@ -8,6 +8,7 @@ User=<%= @user %>
 Group=<%= @group %>
 EnvironmentFile=-/etc/sysconfig/dropwizard_<%= @name %>
 ExecStart=/bin/java $JAVA_OPTS -jar <%= @_jar_file %> server "<%= @_config_files.join(',') %>"
+SyslogIdentifier=<%= @name %>
 Restart=on-failure
 RestartSec=30s
 
