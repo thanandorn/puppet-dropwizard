@@ -7,7 +7,7 @@ GEM
       CFPropertyList (~> 2.2.6)
     hiera (3.0.1)
       json_pure
-    json (1.8.3)
+    json (2.3.1)
     json_pure (1.8.2)
     metaclass (0.0.4)
     metadata-json-lint (0.0.6)
